@@ -43,6 +43,10 @@ do
             cloudcover="$2"
             shift
             ;;
+        -m|--maxrows)
+            maxrows="$2"
+            shift
+            ;;
 
         # compose options
         -n|--name)
@@ -101,6 +105,9 @@ tiles=${tiles:="32TMS"}
 # maximum cloud cover fraction
 cloudcover=${cloudcover:="100"}
 
+# maximum number of rows in query
+maxrows=${maxrows:="10"}
+
 # region name for composite images
 region=${region:="aletsch"}
 
@@ -131,7 +138,7 @@ then
     query="platformname:Sentinel-2 AND "
     query+="footprint:\"intersects(${intersect})\" AND "
     query+="cloudcoverpercentage:[0 TO ${cloudcover}]"
-    url="https://scihub.copernicus.eu/dhus/search?q=${query}&rows=1"
+    url="https://scihub.copernicus.eu/dhus/search?q=${query}&rows=${maxrows}"
     wget --quiet --no-check-certificate --user=${user} --password=${pass} \
          --output-document searchresults.xml "$url"
 
