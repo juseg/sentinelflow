@@ -152,10 +152,11 @@ then
             url="${urlbase}/Nodes('${name}')/Nodes('manifest.safe')/\$value"
             if [ ! -s "$manifestpath" ]
             then
+                echo "Downloading file $(basename ${manifestpath})..."
                 mkdir -p $(dirname $manifestpath)
                 wget --quiet --no-check-certificate --continue \
                      --user=${user} --password=${pass} \
-                     --output-document manifests/$name $url
+                     --output-document $manifestpath $url
             fi
 
             # find and loop on granule xml files and bands for requested tiles
