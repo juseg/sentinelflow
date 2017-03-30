@@ -134,6 +134,13 @@ cd $basedir
 if [ "$offline" != "yes" ]
 then
 
+    # parse intersect if list of four numbers
+    if [[ "$intersect" =~ ^[\-0-9.]*,[\-0-9.]*,[\-0-9.]*,[\-0-9.]*$ ]]
+    then
+        read w s e n <<< $(echo "$intersect" | tr ',' ' ')
+        intersect="POLYGON(($w $s,$e $s,$e $n,$w $n,$w $s))"
+    fi
+
     # search for products and save to searchresults.xml
     query="platformname:Sentinel-2 AND "
     query+="footprint:\"intersects(${intersect})\" AND "

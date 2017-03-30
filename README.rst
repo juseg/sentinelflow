@@ -1,10 +1,9 @@
 Sentinelflow
 ============
 
-Search, download and patch Copernicus_ Sentinel-2A_ data into appealing images.
-
-Colours are adapted to human perception and allow visualization over a wide
-contrast range covering dark oceans as well as bright snow surfaces.
+Search, download and patch Copernicus_ Sentinel-2A_ data into appealing color
+images. Colors are adapted to human perception and fit for dark oceans as well
+as bright snow surfaces.
 
 Registration_ to the Copernicus Open Access Hub is required.
 
