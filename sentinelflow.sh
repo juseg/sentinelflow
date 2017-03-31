@@ -70,6 +70,9 @@ do
         -o|--offline)
             offline="yes"
             ;;
+        -f|--fetchonly)
+            query="yes"
+            ;;
 
         # unknown option
         *)
@@ -205,6 +208,12 @@ then
         echo "Failed query, continuing offline."
     fi
 
+fi
+
+# if download only mode
+if [ "$fetchonly" == "yes" ]
+then
+    exit 0
 fi
 
 
