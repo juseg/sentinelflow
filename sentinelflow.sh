@@ -71,7 +71,7 @@ do
             offline="yes"
             ;;
         -f|--fetchonly)
-            query="yes"
+            fetchonly="yes"
             ;;
 
         # unknown option
