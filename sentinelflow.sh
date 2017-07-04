@@ -67,11 +67,14 @@ do
             ;;
 
         # flags
-        -o|--offline)
-            offline="yes"
-            ;;
         -f|--fetchonly)
             fetchonly="yes"
+            ;;
+        -k|--keeptiff)
+            keeptiff="yes"
+            ;;
+        -o|--offline)
+            offline="yes"
             ;;
 
         # unknown option
@@ -371,6 +374,13 @@ do
         echo -e "$worldfile" > $ofile_rgb.jpw
     fi
 
+    # remove tiff unless asked not to
+    if [ ! "$keeptiff" == "yes" ]
+    then
+        echo "Removing $ofile_rgb.tif ..."
+        rm $ofile_rgb.tif
+    fi
+
     # export IRG composite over selected region
     if [ ! -s $ofile_irg.tif ]
     then
@@ -392,6 +402,13 @@ do
                 -modulate 100,150 $sharpargs -quality 85 -quiet \
                 $ofile_irg.tif $ofile_irg.jpg
         echo -e "$worldfile" > $ofile_irg.jpw
+    fi
+
+    # remove tiff unless asked not to
+    if [ ! "$keeptiff" == "yes" ]
+    then
+        echo "Removing $ofile_irg.tif ..."
+        rm $ofile_irg.tif
     fi
 
 done
