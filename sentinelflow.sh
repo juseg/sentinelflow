@@ -66,6 +66,12 @@ do
             shift
             ;;
 
+        # convert options
+        -s|--sigma)
+            sigma="$2"
+            shift
+            ;;
+
         # flags
         -f|--fetchonly)
             fetchonly="yes"
@@ -125,6 +131,9 @@ resolution=${resolution:="10"}
 
 # maximum percentage of null values
 nullvalues=${nullvalues:="50"}
+
+# sigmoidal contrast
+sigma=${sigma:="15,50%"}
 
 # offline mode
 offline=${offline:="no"}
@@ -368,7 +377,7 @@ do
     if [ ! -s $ofile_rgb.jpg ]
     then
         echo "Converting $ofile_rgb.tif ..."
-        convert -gamma 5.05,5.10,4.85 -sigmoidal-contrast 15,50% \
+        convert -gamma 5.05,5.10,4.85 -sigmoidal-contrast $sigma \
                 -modulate 100,150 $sharpargs -quality 85 -quiet \
                 $ofile_rgb.tif $ofile_rgb.jpg
         echo -e "$worldfile" > $ofile_rgb.jpw
@@ -398,7 +407,7 @@ do
     if [ ! -s $ofile_irg.jpg ]
     then
         echo "Converting $ofile_irg.tif ..."
-        convert -gamma 5.50,5.05,5.10 -sigmoidal-contrast 15,50% \
+        convert -gamma 5.50,5.05,5.10 -sigmoidal-contrast $sigma \
                 -modulate 100,150 $sharpargs -quality 85 -quiet \
                 $ofile_irg.tif $ofile_irg.jpg
         echo -e "$worldfile" > $ofile_irg.jpw
