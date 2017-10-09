@@ -17,16 +17,16 @@ do
     case "$1" in
 
         # general options
-        -d|--basedir)
-            basedir="$2"
-            shift
-            ;;
         -u|--user)
             user="$2"
             shift
             ;;
         -p|--pass)
             pass="$2"
+            shift
+            ;;
+        -w|--workdir)
+            workdir="$2"
             shift
             ;;
 
@@ -105,8 +105,8 @@ then
     exit 2
 fi
 
-# base directory
-basedir=${basedir:="."}
+# working directory
+workdir=${workdir:="."}
 
 # intersect lat,lon used in query, comma-separated
 intersect=${intersect:="46.5,8.1"}
@@ -142,8 +142,8 @@ offline=${offline:="no"}
 # Download requested tiles
 # ------------------------
 
-# change to input base directory
-cd $basedir
+# change to input work directory
+cd $workdir
 
 # if not in offline mode
 if [ "$offline" != "yes" ]
