@@ -43,6 +43,10 @@ do
             cloudcover="$2"
             shift
             ;;
+        -d|--daterange)
+            daterange="$2"
+            shift
+            ;;
         -m|--maxrows)
             maxrows="$2"
             shift
@@ -117,6 +121,9 @@ tiles=${tiles:="32TMS"}
 # maximum cloud cover fraction
 cloudcover=${cloudcover:="100"}
 
+# range of sensing date in query
+daterange=${daterange:=""}
+
 # maximum number of rows in query
 maxrows=${maxrows:="10"}
 
@@ -156,10 +163,23 @@ then
         intersect="POLYGON(($w $s,$e $s,$e $n,$w $n,$w $s))"
     fi
 
-    # search for products and save to searchresults.xml
+    # prepare query
     query="platformname:Sentinel-2 AND "
     query+="footprint:\"intersects(${intersect})\" AND "
     query+="cloudcoverpercentage:[0 TO ${cloudcover}]"
+
+    # apply date bounds if provided
+    if [ "$daterange" != "" ]
+    then
+        d0=${daterange%%..*}
+        d1=${daterange##*..}
+        d0=${d0:0:4}-${d0:4:2}-${d0:6:2}T00:00:00.000Z
+        d1=${d1:0:4}-${d1:4:2}-${d1:6:2}T59:59:59.999Z
+        query+=" AND beginPosition:[$d0 TO $d1]"
+        query+=" AND endPosition:[$d0 TO $d1]"
+    fi
+
+    # search for products and save to searchresults.xml
     url="https://scihub.copernicus.eu/dhus/search?q=${query}&rows=${maxrows}"
     wget --quiet --no-check-certificate --user=${user} --password=${pass} \
          --output-document searchresults.xml "$url"
