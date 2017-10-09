@@ -3,7 +3,7 @@
 # Command-line help
 # -----------------
 
-helpstring="Usage: sentinelflow.sh -user USERNAME --pass PASSWORD [options]
+helpstring="Usage: sentinelflow.sh --user USERNAME --pass PASSWORD [options]
 
 Search, download and patch Copernicus Sentinel-2A data into color images.
 Registration to the Copernicus Open Access Hub is required.
@@ -62,15 +62,7 @@ do
             shift
             ;;
 
-        # query options
-        -i|--intersect)
-            intersect="$2"
-            shift
-            ;;
-        -t|--tiles)
-            tiles="$2"
-            shift
-            ;;
+        # query and download options
         -c|--cloudcover)
             cloudcover="$2"
             shift
@@ -79,32 +71,38 @@ do
             daterange="$2"
             shift
             ;;
+        -i|--intersect)
+            intersect="$2"
+            shift
+            ;;
         -m|--maxrows)
             maxrows="$2"
             shift
             ;;
-
-        # compose options
-        -n|--name)
-            region="$2"
+        -t|--tiles)
+            tiles="$2"
             shift
             ;;
+
+        # compose and convert options
         -e|--extent)
             extent="$2"
+            shift
+            ;;
+        -n|--name)
+            region="$2"
             shift
             ;;
         -r|--resolution)
             resolution="$2"
             shift
             ;;
-        -x|--nullvalues)
-            nullvalues="$2"
-            shift
-            ;;
-
-        # convert options
         -s|--sigma)
             sigma="$2"
+            shift
+            ;;
+        -x|--nullvalues)
+            nullvalues="$2"
             shift
             ;;
 
@@ -136,49 +134,35 @@ done
 # check for compulsory arguments
 if [ -z "$user" ]
 then
-    echo "Please provide Copernicus user name (--user)."
+    echo "Error, please provide Copernicus user name (--user)."
     exit 2
 fi
 if [ -z "$pass" ]
 then
-    echo "Please provide Copernicus password (--pass)."
+    echo "Error, please provide Copernicus password (--pass)."
     exit 2
 fi
 
-# working directory
+# default working directory
 workdir=${workdir:="."}
 
-# intersect lat,lon used in query, comma-separated
+# default query and download options
+cloudcover=${cloudcover:="100"}
+daterange=${daterange:=""}
 intersect=${intersect:="46.5,8.1"}
-
-# tiles to download and patch, comma-separated
+maxrows=${maxrows:="10"}
 tiles=${tiles:="32TMS"}
 
-# maximum cloud cover fraction
-cloudcover=${cloudcover:="100"}
-
-# range of sensing date in query
-daterange=${daterange:=""}
-
-# maximum number of rows in query
-maxrows=${maxrows:="10"}
-
-# region name for composite images
-region=${region:="aletsch"}
-
-# wsen extent in UTM local zone coordinates, comma-separated
+# default compose and convert options
 extent=${extent:="410000,5135000,450000,5165000"}
-
-# spatial resolution in meters
+region=${region:="aletsch"}
 resolution=${resolution:="10"}
-
-# maximum percentage of null values
+sigma=${sigma:="15,50%"}
 nullvalues=${nullvalues:="50"}
 
-# sigmoidal contrast
-sigma=${sigma:="15,50%"}
-
-# offline mode
+# default flags
+fetchonly=${fetchonly:="no"}
+keeptiff=${keeptiff:="no"}
 offline=${offline:="no"}
 
 
