@@ -1,11 +1,43 @@
 #!/bin/bash
 
-# Download Sentinel-2A data and export RGB and IRG images
-# =======================================================
-# B02 490nm B
-# B03 560nm G
-# B04 665nm R
-# B08 842nm IR
+# Command-line help
+# -----------------
+
+helpstring="Usage: sentinelflow.sh -user USERNAME --pass PASSWORD [options]
+
+Search, download and patch Copernicus Sentinel-2A data into color images.
+Registration to the Copernicus Open Access Hub is required.
+Defaults produce images over Aletsch Glacier in the Alps.
+
+General options
+    -h, --help          display this help message and exit
+    -u, --user          username at Copernicus Open Access Hub (required)
+    -p, --pass          password at Copernicus Open Access Hub (required)
+    -w, --workdir       working directory (default: current)
+
+Query and download options
+    -c, --cloudcover    maximum cloud cover fraction (default: 100)
+    -d, --daterange     range of sensing date in query (default: none)
+    -i, --intersect     point LAT,LON or rectangle W,E,S,N (default: 46.5,8.1)
+    -m, --maxrows       maximum number of rows in query (default: 10)
+    -t, --tiles         tiles to download, comma-separated (default: 32TMS)
+
+Image composition options
+    -e, --extent        W,S,E,N extent in UTM local zone coordinates
+                        (default: 410000,5135000,450000,5165000)
+    -n, --name          region name for composite images (default: aletsch)
+    -r, --resolution    spatial resolution in meters (default: 10)
+    -s, --sigma         sigmoidal contrast parameters (default: 15,50%)
+    -x, --nullvalues    maximum percentage of null values (default: 50)
+
+Flags
+    -f, --fetchonly     download data only, do not patch images (default: no)
+    -k, --keeptiff      keep intermediate TIFF images (default: no)
+    -o, --offline       offline mode, use local data only (default: no)
+
+Sentinelflow (c) 2016--2017 Julien Seguinot <seguinot@vaw.baug.ethz.ch>
+Please contact the author before using images in publications.
+Report bugs at: <https://github.com/juseg/sentinelflow>."
 
 
 # Parse command-line arguments
@@ -80,6 +112,10 @@ do
         -f|--fetchonly)
             fetchonly="yes"
             ;;
+        -h|--help)
+            echo "$helpstring"
+            exit 0
+            ;;
         -k|--keeptiff)
             keeptiff="yes"
             ;;
@@ -90,7 +126,7 @@ do
         # unknown option
         *)
             echo "Unknown option $1. Exiting."
-            exit 0
+            exit 2
             ;;
 
     esac
