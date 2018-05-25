@@ -184,7 +184,7 @@ then
     fi
 
     # prepare query
-    query="platformname:Sentinel-2 AND "
+    query="producttype:S2MSI1C AND "
     query+="footprint:\"intersects(${intersect})\" AND "
     query+="cloudcoverpercentage:[0 TO ${cloudcover}]"
 
