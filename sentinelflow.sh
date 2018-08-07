@@ -35,7 +35,7 @@ Flags
     -k, --keeptiff      keep intermediate TIFF images (default: no)
     -o, --offline       offline mode, use local data only (default: no)
 
-Sentinelflow (c) 2016--2017 Julien Seguinot <seguinot@vaw.baug.ethz.ch>
+Sentinelflow (c) 2016--2018 Julien Seguinot <seguinot@vaw.baug.ethz.ch>
 Please contact the author before using images in publications.
 Report bugs at: <https://github.com/juseg/sentinelflow>."
 
@@ -131,18 +131,6 @@ do
     shift
 done
 
-# check for compulsory arguments
-if [ -z "$user" ]
-then
-    echo "Error, please provide Copernicus user name (--user)."
-    exit 2
-fi
-if [ -z "$pass" ]
-then
-    echo "Error, please provide Copernicus password (--pass)."
-    exit 2
-fi
-
 # default working directory
 workdir=${workdir:="."}
 
@@ -175,6 +163,20 @@ cd $workdir
 # if not in offline mode
 if [ "$offline" != "yes" ]
 then
+
+    # check for compulsory arguments
+    if [ -z "$user" ]
+    then
+        echo "Please provide Copernicus user name (--user)" \
+             "or run offline (--offline)."
+        exit 2
+    fi
+    if [ -z "$pass" ]
+    then
+        echo "Please provide Copernicus pass word (--pass)" \
+             "or run offline (--offline)."
+        exit 2
+    fi
 
     # parse intersect if list of four numbers
     if [[ "$intersect" =~ ^[\-0-9.]*,[\-0-9.]*,[\-0-9.]*,[\-0-9.]*$ ]]
