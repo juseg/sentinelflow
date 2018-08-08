@@ -293,6 +293,10 @@ do
         sensdate=$(xml sel -t -v "//SENSING_TIME" $datadir/*.xml)
         sensdate=$(date -u -d$sensdate +%Y%m%d_%H%M%S_%3N)
 
+        # find satellite prefix
+        tid=$(xml sel -t -v "//TILE_ID" $datadir/*.xml)
+        sat=${tid:0:3}
+
         # on error, assume xml file is broken and remove it
         if [ "$?" -ne "0" ]
         then
@@ -302,7 +306,7 @@ do
         fi
 
         # build RGB VRT
-        ofile_rgb="scenes/S2A_${sensdate}_T${tile}_RGB.vrt"
+        ofile_rgb="scenes/${sat}_${sensdate}_T${tile}_RGB.vrt"
         if [ ! -s $ofile_rgb ]
         then
             echo "Building scene $(basename $ofile_rgb) ..."
@@ -317,7 +321,7 @@ do
         fi
 
         # build IRG VRT
-        ofile_irg="scenes/S2A_${sensdate}_T${tile}_IRG.vrt"
+        ofile_irg="scenes/${sat}_${sensdate}_T${tile}_IRG.vrt"
         if [ ! -s $ofile_irg ]
         then
             echo "Building scene $(basename $ofile_irg) ..."
@@ -351,21 +355,21 @@ worldfile="${ewres}\n0\n-0\n-${nsres}\n${w}\n${n}"
 
 # find sensing dates with data on requested tiles
 scenes=$(ls scenes | egrep "T(${tiles//,/|})" || echo "")
-sensdates=$(echo "$scenes" | cut -c 5-23 | uniq)
+sensdates=$(echo "$scenes" | cut -c 1-23 | uniq)
 
 # loop on sensing dates
 for sensdate in $sensdates
 do
 
     # skip date if both files are already here
-    ofile_rgb="composite/$region/rgb/S2A_${sensdate}_RGB"
-    ofile_irg="composite/$region/irg/S2A_${sensdate}_IRG"
+    ofile_rgb="composite/$region/rgb/${sensdate}_RGB"
+    ofile_irg="composite/$region/irg/${sensdate}_IRG"
     [ -s $ofile_rgb.jpg ] && [ -s $ofile_irg.jpg ] && continue
     [ -s $ofile_rgb.txt ] && [ -s $ofile_irg.txt ] && continue
 
     # find how many scenes correspond to requested tiles over region
-    scenes_rgb=$(find scenes | egrep "S2A_${sensdate}_T(${tiles//,/|})_RGB.vrt")
-    scenes_irg=$(find scenes | egrep "S2A_${sensdate}_T(${tiles//,/|})_IRG.vrt")
+    scenes_rgb=$(find scenes | egrep "${sensdate}_T(${tiles//,/|})_RGB.vrt")
+    scenes_irg=$(find scenes | egrep "${sensdate}_T(${tiles//,/|})_IRG.vrt")
     n=$(echo $scenes_rgb | wc -w)
 
     # assemble mosaic VRT in temporary files
