@@ -290,9 +290,7 @@ do
 
         # find sensing date and convert format
         #namedate=${granule:25:15}  # !! this is not the sensing date
-        sensdate=$(grep "SENSING_TIME" $datadir/*.xml)
-        sensdate=${sensdate#*>}
-        sensdate=${sensdate%<*}
+        sensdate=$(xml sel -t -v "//SENSING_TIME" $datadir/*.xml)
         sensdate=$(date -u -d$sensdate +%Y%m%d_%H%M%S_%3N)
 
         # on error, assume xml file is broken and remove it
