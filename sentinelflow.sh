@@ -23,10 +23,9 @@ Query and download options
     -t, --tiles         tiles to download, comma-separated (default: 32TMS)
 
 Image composition options
-    -e, --extent        W,S,E,N extent in UTM local zone coordinates
-                        (default: 410000,5135000,450000,5165000)
+    -e, --extent        W,S,E,N extent in local UTM coordinates (default: none)
     -n, --name          region name for composite images (default: aletsch)
-    -r, --resolution    spatial resolution in meters (default: 10)
+    -r, --resolution    spatial resolution in meters (default: none)
     -s, --sigma         sigmoidal contrast parameters (default: 15,50%)
     -x, --nullvalues    maximum percentage of null values (default: 50)
 
@@ -142,9 +141,9 @@ maxrows=${maxrows:="10"}
 tiles=${tiles:="32TMS"}
 
 # default compose and convert options
-extent=${extent:="410000,5135000,450000,5165000"}
+extent=${extent:=""}
 region=${region:="aletsch"}
-resolution=${resolution:="10"}
+resolution=${resolution:=""}
 sigma=${sigma:="15,50%"}
 nullvalues=${nullvalues:="50"}
 
@@ -373,7 +372,9 @@ do
     n=$(echo $scenes_rgb | wc -w)
 
     # assemble mosaic VRT in temporary files
-    gdalargs="-q -te ${extent//,/ } -tr $resolution $resolution"
+    gdalargs="-q"
+    [ -n "$extent" ] && gdalargs+=" -te ${extent//,/ }"
+    [ -n "$resolution" ] && gdalargs+=" -tr $resolution $resolution"
     gdalbuildvrt $gdalargs tmp_$$_rgb.vrt $scenes_rgb
     gdalbuildvrt $gdalargs tmp_$$_irg.vrt $scenes_irg
 
