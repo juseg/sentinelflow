@@ -24,7 +24,7 @@ Query and download options
 
 Image composition options
     -e, --extent        W,S,E,N extent in local UTM coordinates (default: none)
-    -n, --name          region name for composite images (default: aletsch)
+    -n, --name          region name for composite images (default: none)
     -r, --resolution    spatial resolution in meters (default: none)
     -s, --sigma         sigmoidal contrast parameters (default: 15,50%)
     -x, --nullvalues    maximum percentage of null values (default: 50)
@@ -142,7 +142,7 @@ tiles=${tiles:="32TMS"}
 
 # default compose and convert options
 extent=${extent:=""}
-region=${region:="aletsch"}
+region=${region:="t$(echo $tiles | tr '[:upper:]' '[:lower:]' | tr ',' 't')"}
 resolution=${resolution:=""}
 sigma=${sigma:="15,50%"}
 nullvalues=${nullvalues:="50"}
