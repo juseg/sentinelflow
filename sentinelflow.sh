@@ -16,9 +16,9 @@ General options
     -w, --workdir       working directory (default: current)
 
 Query and download options
-    -c, --cloudcover    maximum cloud cover fraction (default: 100)
+    -c, --cloudcover    maximum cloud cover fraction (default: none)
     -d, --daterange     range of sensing date in query (default: none)
-    -i, --intersect     point LAT,LON or rectangle W,E,S,N (default: 46.5,8.1)
+    -i, --intersect     point LAT,LON or rectangle W,E,S,N (default: none)
     -m, --maxrows       maximum number of rows in query (default: 10)
     -t, --tiles         tiles to download, comma-separated (default: 32TMS)
 
@@ -30,6 +30,7 @@ Image composition options
     -x, --nullvalues    maximum percentage of null values (default: 50)
 
 Flags
+    -1, --sentinel1     download sentinel-1 data (experimental, default: no)
     -f, --fetchonly     download data only, do not patch images (default: no)
     -k, --keeptiff      keep intermediate TIFF images (default: no)
     -o, --offline       offline mode, use local data only (default: no)
@@ -106,6 +107,9 @@ do
             ;;
 
         # flags
+        -1|--sentinel1)
+            sentinel1="yes"
+            ;;
         -f|--fetchonly)
             fetchonly="yes"
             ;;
@@ -134,9 +138,9 @@ done
 workdir=${workdir:="."}
 
 # default query and download options
-cloudcover=${cloudcover:="100"}
+cloudcover=${cloudcover:=""}
 daterange=${daterange:=""}
-intersect=${intersect:="46.5,8.1"}
+intersect=${intersect:=""}
 maxrows=${maxrows:="10"}
 tiles=${tiles:="32TMS"}
 
@@ -148,6 +152,7 @@ sigma=${sigma:="15,50%"}
 nullvalues=${nullvalues:="50"}
 
 # default flags
+sentinel1=${sentinel1:="no"}
 fetchonly=${fetchonly:="no"}
 keeptiff=${keeptiff:="no"}
 offline=${offline:="no"}
@@ -184,10 +189,16 @@ then
         intersect="POLYGON(($w $s,$e $s,$e $n,$w $n,$w $s))"
     fi
 
-    # prepare query
-    query="producttype:S2MSI1C AND "
-    query+="footprint:\"intersects(${intersect})\" AND "
-    query+="cloudcoverpercentage:[0 TO ${cloudcover}]"
+    # construct query
+    if [ "$sentinel1" == "yes" ]
+    then
+        query="platformname:Sentinel-1 AND producttype:GRD"
+        query+=" AND polarisationmode:HH+HV AND sensoroperationalmode:IW"
+    else
+        query="platformname:Sentinel-2 AND producttype:S2MSI1C"
+    fi
+    [ -n "$intersect" ] && query+=" AND footprint:\"intersects(${intersect})\""
+    [ -n "$cloudcover" ] && query+=" AND cloudcoverpercentage:[0 TO ${cloudcover}]"
 
     # apply date bounds if provided
     if [ "$daterange" != "" ]
@@ -229,10 +240,17 @@ then
                      --output-document $manifestpath $url
             fi
 
+            # manifest file name pattern
+            if [ "$sentinel1" == "yes" ]
+            then
+                pattern="hh.*tiff"
+            else
+                pattern="T(${tiles//,/|}).*(MTD.*.xml|_B0(2|3|4|8).jp2)"
+            fi
+
             # find and loop on granule xml files and bands for requested tiles
             xml sel -t -m "//fileLocation" -v "@href" -n $manifestpath |
-            egrep "T(${tiles//,/|})" | egrep "(.xml|_B0(2|3|4|8).jp2)" |
-            grep -v "QI_DATA" | while read line
+            egrep -e "$pattern" | while read line
             do
 
                 # get file path and remote url
@@ -264,7 +282,7 @@ then
 fi
 
 # if download only mode
-if [ "$fetchonly" == "yes" ]
+if [ "$fetchonly" == "yes" ] || [ "$sentinel1" == "yes" ]
 then
     exit 0
 fi
