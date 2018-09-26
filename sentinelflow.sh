@@ -164,8 +164,32 @@ offline=${offline:="no"}
 # Check dependencies
 # ------------------
 
-# find xml starlet executable
+# check for ImageMagick
+if ! [ -x "$(command -v convert)" ]
+then
+    echo "Error: convert not found. Please install ImageMagick." >&2
+    exit 1
+fi
+
+# check for GDAL binaries
+if ! [ -x "$(command -v gdalbuildvrt)" ]
+then
+    echo "Error: gdalbuildvrt not found. Please install GDAL binaries." >&2
+    exit 1
+fi
+if ! [ -x "$(command -v gdal_translate)" ]
+then
+    echo "Error: gdal_translate not found. Please install GDAL binaries." >&2
+    exit 1
+fi
+
+# check for XMLStarlet
 xmlexec="$(command -v xmlstarlet || command -v xml)"
+if ! [ -x "$xmlexec" ]
+then
+    echo "Error: xml or xmlstarlet not found. Please install XMLStarlet." >&2
+    exit 1
+fi
 
 
 # Download requested tiles
