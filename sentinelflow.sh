@@ -161,6 +161,13 @@ keeptiff=${keeptiff:="no"}
 offline=${offline:="no"}
 
 
+# Check dependencies
+# ------------------
+
+# find xml starlet executable
+xmlexec="$(command -v xmlstarlet || command -v xml)"
+
+
 # Download requested tiles
 # ------------------------
 
@@ -220,9 +227,9 @@ then
          --output-document searchresults.xml "$url"
 
     # if valid xml search results then parse them and loop on products
-    if xml -q val searchresults.xml
+    if $xmlexec -q val searchresults.xml
     then
-        xml sel -t -m "//_:entry" -v "_:title" -o " " \
+        $xmlexec sel -t -m "//_:entry" -v "_:title" -o " " \
                 -m "_:link" -i 'not(@rel)' -v "@href" -n searchresults.xml |
         while read name urlbase
         do
@@ -252,7 +259,7 @@ then
             fi
 
             # find and loop on granule xml files and bands for requested tiles
-            xml sel -t -m "//fileLocation" -v "@href" -n $manifestpath |
+            $xmlexec sel -t -m "//fileLocation" -v "@href" -n $manifestpath |
             egrep -e "$pattern" | while read line
             do
 
@@ -310,11 +317,11 @@ do
 
         # find sensing date and convert format
         #namedate=${granule:25:15}  # !! this is not the sensing date
-        sensdate=$(xml sel -t -v "//SENSING_TIME" $datadir/*.xml)
+        sensdate=$($xmlexec sel -t -v "//SENSING_TIME" $datadir/*.xml)
         sensdate=$(date -u -d$sensdate +%Y%m%d_%H%M%S_%3N)
 
         # find satellite prefix
-        tid=$(xml sel -t -v "//TILE_ID" $datadir/*.xml)
+        tid=$($xmlexec sel -t -v "//TILE_ID" $datadir/*.xml)
         sat=${tid:0:3}
 
         # on error, assume xml file is broken and remove it
