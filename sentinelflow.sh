@@ -412,39 +412,38 @@ sensdates=$(echo "$scenes" | cut -c 1-23 | uniq)
 for sensdate in $sensdates
 do
 
-    # skip date if both files are already here
-    ofile_rgb="composite/$region/rgb/${sensdate}_RGB"
-    ofile_irg="composite/$region/irg/${sensdate}_IRG"
-    [ -s $ofile_rgb.jpg ] && [ -s $ofile_irg.jpg ] && continue
-    [ -s $ofile_rgb.txt ] && [ -s $ofile_irg.txt ] && continue
+    # color mode
+    bands="rgb"  # FIXME add an option for that
+
+    # skip date if image or text file is already here
+    ofile="composite/$region/$bands/${sensdate}_${bands^^}"
+    [ -s $ofile.jpg ] || [ -s $ofile.txt ] && continue
 
     # find how many scenes correspond to requested tiles over region
-    scenes_rgb=$(find scenes | egrep "${sensdate}_T(${tiles//,/|})_RGB.vrt")
-    scenes_irg=$(find scenes | egrep "${sensdate}_T(${tiles//,/|})_IRG.vrt")
-    n=$(echo $scenes_rgb | wc -w)
+    scenes=$(find scenes | egrep "${sensdate}_T(${tiles//,/|})_${bands^^}.vrt")
+    n=$(echo $scenes | wc -w)
 
     # assemble mosaic VRT in temporary files
     gdalargs="-q"
     [ -n "$extent" ] && gdalargs+=" -te ${extent//,/ }"
     [ -n "$resolution" ] && gdalargs+=" -tr $resolution $resolution"
-    gdalbuildvrt $gdalargs tmp_$$_rgb.vrt $scenes_rgb
-    gdalbuildvrt $gdalargs tmp_$$_irg.vrt $scenes_irg
+    gdalbuildvrt $gdalargs tmp_$$.vrt $scenes
 
-    # export RGB composite over selected region
-    if [ ! -s $ofile_rgb.tif ]
+    # export composite over selected region
+    if [ ! -s $ofile.tif ]
     then
-        echo "Exporting $ofile_rgb.tif ..."
-        gdal_translate -co "PHOTOMETRIC=rgb" -q tmp_$$_rgb.vrt $ofile_rgb.tif
+        echo "Exporting $ofile.tif ..."
+        gdal_translate -co "PHOTOMETRIC=rgb" -q tmp_$$.vrt $ofile.tif
         if [ "$?" -ne "0" ]
         then
-            echo "Error, removing $ofile_rgb.tif ..."
-            rm $ofile_rgb.tif
+            echo "Error, removing $ofile.tif ..."
+            rm $ofile.tif
             continue
         fi
     fi
 
     # count percentage of null pixels
-    nulls=$(convert -quiet $ofile_rgb.tif -fill white +opaque black \
+    nulls=$(convert -quiet $ofile.tif -fill white +opaque black \
             -print "%[fx:100*(1-mean)]" null:)
     message="Found ${nulls}% null values."
     echo $message
@@ -452,13 +451,10 @@ do
     # if more nulls than allowed, report in txt and remove tifs
     if [ "${nulls%.*}" -ge "${nullvalues}" ]
     then
-        echo "Removing $ofile_rgb.tif ..."
-        echo "$message" > $ofile_rgb.txt
-        echo "$message" > $ofile_irg.txt
-        [ -f $ofile_rgb.tif ] && rm $ofile_rgb.tif
-        [ -f $ofile_irg.tif ] && rm $ofile_irg.tif
-        [ -f $ofile_rgb.jpg ] && rm $ofile_rgb.jpg
-        [ -f $ofile_irg.jpg ] && rm $ofile_irg.jpg
+        echo "Removing $ofile.tif ..."
+        echo "$message" > $ofile.txt
+        [ -f $ofile.tif ] && rm $ofile.tif
+        [ -f $ofile.jpg ] && rm $ofile.jpg
         continue
     fi
 
@@ -470,58 +466,33 @@ do
         sharpargs=""
     fi
 
+    # gamma correction depends on color mode
+    case $bands in
+        "irg") gamma="5.05,5.10,4.85";;
+        "rgb") gamma="5.50,5.05,5.10";;
+    esac
+
     # convert to human-readable jpeg
-    if [ ! -s $ofile_rgb.jpg ]
+    if [ ! -s $ofile.jpg ]
     then
-        echo "Converting $ofile_rgb.tif ..."
-        convert -gamma 5.05,5.10,4.85 -sigmoidal-contrast $sigma \
+        echo "Converting $ofile.tif ..."
+        convert -gamma $gamma -sigmoidal-contrast $sigma \
                 -modulate 100,150 $sharpargs -quality 85 -quiet \
-                $ofile_rgb.tif $ofile_rgb.jpg
-        echo -e "$worldfile" > $ofile_rgb.jpw
+                $ofile.tif $ofile.jpg
+        echo -e "$worldfile" > $ofile.jpw
     fi
 
     # remove tiff unless asked not to
     if [ ! "$keeptiff" == "yes" ]
     then
-        echo "Removing $ofile_rgb.tif ..."
-        rm $ofile_rgb.tif
-    fi
-
-    # export IRG composite over selected region
-    if [ ! -s $ofile_irg.tif ]
-    then
-        echo "Exporting $ofile_irg.tif ..."
-        gdal_translate -co "PHOTOMETRIC=rgb" -q tmp_$$_irg.vrt $ofile_irg.tif
-        if [ "$?" -ne "0" ]
-        then
-            echo "Error, removing $ofile_irg.tif ..."
-            rm $ofile_irg.tif
-            continue
-        fi
-    fi
-
-    # convert to human-readable jpeg
-    if [ ! -s $ofile_irg.jpg ]
-    then
-        echo "Converting $ofile_irg.tif ..."
-        convert -gamma 5.50,5.05,5.10 -sigmoidal-contrast $sigma \
-                -modulate 100,150 $sharpargs -quality 85 -quiet \
-                $ofile_irg.tif $ofile_irg.jpg
-        echo -e "$worldfile" > $ofile_irg.jpw
-    fi
-
-    # remove tiff unless asked not to
-    if [ ! "$keeptiff" == "yes" ]
-    then
-        echo "Removing $ofile_irg.tif ..."
-        rm $ofile_irg.tif
+        echo "Removing $ofile.tif ..."
+        rm $ofile.tif
     fi
 
 done
 
-# remove temporary mosaic VRTs
-[ -f tmp_$$_rgb.vrt ] && rm tmp_$$_rgb.vrt
-[ -f tmp_$$_irg.vrt ] && rm tmp_$$_irg.vrt
+# remove temporary mosaic VRT
+[ -f tmp_$$.vrt ] && rm tmp_$$.vrt
 
 # happy end
 exit 0
