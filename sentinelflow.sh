@@ -285,7 +285,12 @@ then
             then
                 pattern="hh.*tiff"
             else
-                pattern="T(${tiles//,/|}).*(MTD.*.xml|_B0(2|3|4|8).jp2)"
+                case $bands in
+                    irg) bandnumbers="3|4|8" ;;
+                    rgb) bandnumbers="2|3|4" ;;
+                    *)   echo "Error, unsupported color mode $bands" ;;
+                esac
+                pattern="T(${tiles//,/|}).*(MTD.*.xml|_B0($bandnumbers).jp2)"
             fi
 
             # find and loop on granule xml files and bands for requested tiles
