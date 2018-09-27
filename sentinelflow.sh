@@ -328,8 +328,8 @@ then
 fi
 
 
-# Prepare RGB and IRG scene VRTs by sensing date
-# ----------------------------------------------
+# Prepare scene VRTs by sensing date
+# ----------------------------------
 
 mkdir -p scenes
 
@@ -362,32 +362,28 @@ do
             continue
         fi
 
-        # build RGB VRT
-        ofile_rgb="scenes/${sat}_${sensdate}_T${tile}_RGB.vrt"
-        if [ ! -s $ofile_rgb ]
+        # build scene VRT
+        ofile="scenes/${sat}_${sensdate}_T${tile}_${bands^^}.vrt"
+        if [ ! -s $ofile ]
         then
-            echo "Building scene $(basename $ofile_rgb) ..."
-            gdalbuildvrt -separate -srcnodata 0 -q $ofile_rgb \
-                $datadir/IMG_DATA/*_B0{4,3,2}.jp2
-            if [ "$?" -ne "0" ]
+            echo "Building scene $(basename $ofile) ..."
+            case $bands in
+                irg) gdalbuildvrt -separate -srcnodata 0 -q $ofile \
+                     $datadir/IMG_DATA/*_B0{8,4,3}.jp2
+                     exit_code="$?"
+                     ;;
+                rgb) gdalbuildvrt -separate -srcnodata 0 -q $ofile \
+                     $datadir/IMG_DATA/*_B0{4,3,2}.jp2
+                     exit_code="$?"
+                     ;;
+                *)   echo "Error, unsupported color mode $bands"
+                     exit 1
+                     ;;
+            esac
+            if [ "$exit_code" -ne "0" ]
             then
-                echo "Error, removing $ofile_rgb ..."
-                rm $ofile_rgb
-                continue
-            fi
-        fi
-
-        # build IRG VRT
-        ofile_irg="scenes/${sat}_${sensdate}_T${tile}_IRG.vrt"
-        if [ ! -s $ofile_irg ]
-        then
-            echo "Building scene $(basename $ofile_irg) ..."
-            gdalbuildvrt -separate -srcnodata 0 -q $ofile_irg \
-                $datadir/IMG_DATA/*_B0{8,4,3}.jp2
-            if [ "$?" -ne "0" ]
-            then
-                echo "Error, removing $ofile_irg ..."
-                rm $ofile_irg
+                echo "Error, removing $ofile ..."
+                rm $ofile
                 continue
             fi
         fi
@@ -397,11 +393,11 @@ do
 done
 
 
-# Export RGB and IRG composite images by region
-# ---------------------------------------------
+# Export composite images by region
+# ---------------------------------
 
 # make output directories
-mkdir -p composite/$region/{rgb,irg}
+mkdir -p composite/$region/{rgb,irg}  #FIXME filenames
 
 # parse extent for world file
 ewres="$resolution"
@@ -471,8 +467,8 @@ do
 
     # gamma correction depends on color mode
     case $bands in
-        "irg") gamma="5.05,5.10,4.85";;
-        "rgb") gamma="5.50,5.05,5.10";;
+        irg) gamma="5.05,5.10,4.85";;
+        rgb) gamma="5.50,5.05,5.10";;
     esac
 
     # convert to human-readable jpeg
