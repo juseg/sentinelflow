@@ -26,6 +26,7 @@ Query and download options
     -t, --tiles         tiles to download, comma-separated (default: 32TMS)
 
 Image composition options
+    -b, --bands         color bands (irg, rgb) for composition (default: rgb)
     -e, --extent        W,S,E,N extent in local UTM coordinates (default: none)
     -n, --name          region name for composite images (default: none)
     -r, --resolution    spatial resolution in meters (default: none)
@@ -88,6 +89,10 @@ do
             ;;
 
         # compose and convert options
+        -b|--bands)
+            bands="$2"
+            shift
+            ;;
         -e|--extent)
             extent="$2"
             shift
@@ -148,6 +153,7 @@ maxrows=${maxrows:="10"}
 tiles=${tiles:="32TMS"}
 
 # default compose and convert options
+bands=${bands:="rgb"}
 extent=${extent:=""}
 region=${region:="t$(echo $tiles | tr '[:upper:]' '[:lower:]' | tr ',' 't')"}
 resolution=${resolution:=""}
@@ -411,9 +417,6 @@ sensdates=$(echo "$scenes" | cut -c 1-23 | uniq)
 # loop on sensing dates
 for sensdate in $sensdates
 do
-
-    # color mode
-    bands="rgb"  # FIXME add an option for that
 
     # skip date if image or text file is already here
     ofile="composite/$region/$bands/${sensdate}_${bands^^}"
