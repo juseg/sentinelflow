@@ -378,7 +378,7 @@ do
         ofile="scenes/T${tile}/${sensdate}_${sat}_${bands^^}.vrt"
         if [ ! -s $ofile ]
         then
-            echo "Building scene $(basename $ofile) ..."
+            echo "Building $ofile ..."
             mkdir -p $(dirname $ofile)
             case ${bands,,} in
                 irg) gdalbuildvrt -separate -srcnodata 0 -q $ofile \
