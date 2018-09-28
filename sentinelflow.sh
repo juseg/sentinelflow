@@ -26,7 +26,7 @@ Query and download options
     -t, --tiles         tiles to download, comma-separated (default: 32TMS)
 
 Image composition options
-    -b, --bands         color bands (irg, rgb) for composition (default: rgb)
+    -b, --bands         color bands (IRG, RGB) for composition (default: RGB)
     -e, --extent        W,S,E,N extent in local UTM coordinates (default: none)
     -n, --name          region name for composite images (default: none)
     -r, --resolution    spatial resolution in meters (default: none)
@@ -153,7 +153,7 @@ maxrows=${maxrows:="10"}
 tiles=${tiles:="32TMS"}
 
 # default compose and convert options
-bands=${bands:="rgb"}
+bands=${bands:="RGB"}
 extent=${extent:=""}
 region=${region:="t$(echo $tiles | tr '[:upper:]' '[:lower:]' | tr ',' 't')"}
 resolution=${resolution:=""}
@@ -285,7 +285,7 @@ then
             then
                 pattern="hh.*tiff"
             else
-                case $bands in
+                case ${bands,,} in
                     irg) bandnumbers="3|4|8" ;;
                     rgb) bandnumbers="2|3|4" ;;
                     *)   echo "Error, unsupported color mode $bands" ;;
@@ -372,7 +372,7 @@ do
         if [ ! -s $ofile ]
         then
             echo "Building scene $(basename $ofile) ..."
-            case $bands in
+            case ${bands,,} in
                 irg) gdalbuildvrt -separate -srcnodata 0 -q $ofile \
                      $datadir/IMG_DATA/*_B0{8,4,3}.jp2
                      exit_code="$?"
@@ -471,7 +471,7 @@ do
     fi
 
     # gamma correction depends on color mode
-    case $bands in
+    case ${bands,,} in
         irg) gamma="5.05,5.10,4.85";;
         rgb) gamma="5.50,5.05,5.10";;
     esac
