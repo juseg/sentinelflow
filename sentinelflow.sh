@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2017--2018, Julien Seguinot <seguinot@vaw.baug.ethz.ch>
+# Copyright (c) 2016--2018, Julien Seguinot <seguinot@vaw.baug.ethz.ch>
 # GNU General Public License v3.0+ (https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
@@ -8,9 +8,7 @@
 
 helpstring="Usage: sentinelflow.sh --user USERNAME --pass PASSWORD [options]
 
-Search, download and patch Copernicus Sentinel-2 data into color images.
-Registration to the Copernicus Open Access Hub is required.
-Defaults produce images over Aletsch Glacier in the Alps.
+Automated satellite image workflow for Sentinel-2.
 
 General options
     -h, --help          display this help message and exit
