@@ -375,10 +375,11 @@ do
         fi
 
         # build scene VRT
-        ofile="scenes/${sat}_${sensdate}_T${tile}_${bands^^}.vrt"
+        ofile="scenes/T${tile}/${sensdate}_${sat}_${bands^^}.vrt"
         if [ ! -s $ofile ]
         then
             echo "Building scene $(basename $ofile) ..."
+            mkdir -p $(dirname $ofile)
             case ${bands,,} in
                 irg) gdalbuildvrt -separate -srcnodata 0 -q $ofile \
                      $datadir/IMG_DATA/*_B0{8,4,3}.jp2
@@ -409,7 +410,7 @@ done
 # ---------------------------------
 
 # make output directories
-mkdir -p composite/$region/{rgb,irg}  #FIXME filenames
+mkdir -p composite/$region
 
 # parse extent for world file
 ewres="$resolution"
@@ -418,20 +419,20 @@ w=$(echo "$extent" | cut -d ',' -f 1)
 n=$(echo "$extent" | cut -d ',' -f 4)
 worldfile="${ewres}\n0\n-0\n-${nsres}\n${w}\n${n}"
 
-# find sensing dates with data on requested tiles
-scenes=$(ls scenes | egrep "T(${tiles//,/|})" || echo "")
-sensdates=$(echo "$scenes" | cut -c 1-23 | uniq)
+# find sensing dates (and sat) with data on requested tiles
+allscenes=$(find scenes | egrep "T(${tiles//,/|})/" || echo "")
+sensdates=$(echo "$allscenes" | sed 's:.*/::' | cut -d '_' -f 1-4 | uniq)
 
 # loop on sensing dates
 for sensdate in $sensdates
 do
 
     # skip date if image or text file is already here
-    ofile="composite/$region/$bands/${sensdate}_${bands^^}"
+    ofile="composite/$region/${sensdate}_${bands^^}"
     [ -s $ofile.jpg ] || [ -s $ofile.txt ] && continue
 
     # find how many scenes correspond to requested tiles over region
-    scenes=$(find scenes | egrep "${sensdate}_T(${tiles//,/|})_${bands^^}.vrt")
+    scenes=$(find scenes | egrep "T(${tiles//,/|})/${sensdate}_${bands^^}.vrt")
     n=$(echo $scenes | wc -w)
 
     # assemble mosaic VRT in temporary files
