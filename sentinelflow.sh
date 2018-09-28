@@ -150,7 +150,7 @@ cloudcover=${cloudcover:=""}
 daterange=${daterange:=""}
 intersect=${intersect:=""}
 maxrows=${maxrows:="10"}
-tiles=${tiles:="32TMS"}
+tiles=${tiles:=""}
 
 # default compose and convert options
 bands=${bands:="RGB"}
@@ -329,6 +329,13 @@ fi
 # if download only mode
 if [ "$fetchonly" == "yes" ] || [ "$sentinel1" == "yes" ]
 then
+    exit 0
+fi
+
+# if no tiles were provided
+if [ "$tiles" == "" ]
+then
+    echo "No tiles were provided. Exiting."
     exit 0
 fi
 
