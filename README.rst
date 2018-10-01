@@ -4,6 +4,13 @@
 Sentinelflow
 ============
 
+.. image:: https://img.shields.io/pypi/v/sentinelflow.svg
+   :target: https://pypi.python.org/pypi/sentinelflow
+.. image:: https://img.shields.io/pypi/l/sentinelflow.svg
+   :target: https://www.gnu.org/licenses/gpl-3.0.txt
+.. image:: https://zenodo.org/badge/86336966.svg
+   :target: https://zenodo.org/badge/latestdoi/86336966
+
 Search, download and patch Copernicus_ Sentinel-2_ data into appealing color
 images. Colors are adapted to human perception and fit for dark oceans as well
 as bright snow surfaces.
