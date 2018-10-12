@@ -478,8 +478,8 @@ do
 
     # gamma correction depends on color mode
     case ${bands,,} in
-        irg) gamma="5.05,5.10,4.85";;
-        rgb) gamma="5.50,5.05,5.10";;
+        irg) gamma="5.50,5.05,5.10";;
+        rgb) gamma="5.05,5.10,4.85";;
     esac
 
     # convert to human-readable jpeg

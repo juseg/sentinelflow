@@ -10,7 +10,7 @@ with open('README.rst', 'r') as f:
     README = f.read()
 
 setup(name='sentinelflow',
-      version='0.1.0',
+      version='0.1.1',
       description=('Automated satellite image workflow for Sentinel-2.'),
       long_description=README,
       long_description_content_type='text/x-rst',
