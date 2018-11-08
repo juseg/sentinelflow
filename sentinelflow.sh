@@ -27,7 +27,7 @@ Image composition options
     -b, --bands         color bands (IRG, RGB) for composition (default: RGB)
     -e, --extent        W,S,E,N extent in local UTM coordinates (default: none)
     -n, --name          region name for composite images (default: none)
-    -r, --resolution    spatial resolution in meters (default: none)
+    -r, --resolution    spatial resolution in meters (default: 10)
     -s, --sigma         sigmoidal contrast parameters (default: 15,50%)
     -x, --nullvalues    maximum percentage of null values (default: 50)
 
@@ -154,7 +154,7 @@ tiles=${tiles:=""}
 bands=${bands:="RGB"}
 extent=${extent:=""}
 region=${region:="t$(echo $tiles | tr '[:upper:]' '[:lower:]' | tr ',' 't')"}
-resolution=${resolution:=""}
+resolution=${resolution:="10"}
 sigma=${sigma:="15,50%"}
 nullvalues=${nullvalues:="50"}
 
