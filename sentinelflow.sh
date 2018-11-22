@@ -417,21 +417,25 @@ w=$(echo "$extent" | cut -d ',' -f 1)
 n=$(echo "$extent" | cut -d ',' -f 4)
 worldfile="${ewres}\n0\n-0\n-${nsres}\n${w}\n${n}"
 
-# find sensing dates (and sat) with data on requested tiles
+# find sensing dates (days) with data on requested tiles
 allscenes=$(find scenes | egrep "T(${tiles//,/|})/" || echo "")
-sensdates=$(echo "$allscenes" | sed 's:.*/::' | cut -d '_' -f 1-4 | uniq)
+sensdates=$(echo "$allscenes" | sed 's:.*/::' | cut -d '_' -f 1 | uniq)
 
 # loop on sensing dates
 for sensdate in $sensdates
 do
 
-    # skip date if image or text file is already here
-    ofile="composite/$region/${sensdate}_${bands^^}"
-    [ -s $ofile.jpg ] || [ -s $ofile.txt ] && continue
-
     # find how many scenes correspond to requested tiles over region
-    scenes=$(find scenes | egrep "T(${tiles//,/|})/${sensdate}_${bands^^}.vrt")
+    scenes=$(find scenes | egrep "T(${tiles//,/|})/${sensdate}.*${bands^^}.vrt")
     n=$(echo $scenes | wc -w)
+
+    # pick the median scene for output file name
+    sorted=$(echo "$scenes" | cut -d '/' -f 3 | sort )
+    median=$(echo "$sorted" | head -n $((n/2+1)) | tail -n 1)
+
+    # skip date if image or text file is already here
+    ofile="composite/$region/${median%%.vrt}"
+    [ -s $ofile.jpg ] || [ -s $ofile.txt ] && continue
 
     # assemble mosaic VRT in temporary files
     gdalargs="-q"
