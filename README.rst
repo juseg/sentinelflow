@@ -13,7 +13,7 @@ Sentinelflow
 
 Search, download and patch Copernicus_ Sentinel-2_ data into appealing color
 images. Colors are adapted to human perception and fit for dark oceans as well
-as bright snow surfaces.
+as bright snow surfaces (see a few examples_).
 
 Requires GDAL_, ImageMagick_, XMLStarlet_, and a registration_ to the
 Copernicus Open Access Hub. A Python port is under preparation.
@@ -46,6 +46,7 @@ mention:
 
 .. _Copernicus: http://copernicus.eu
 .. _data products: https://sentinel.esa.int/web/sentinel/missions/sentinel-2/data-products
+.. _examples: https://people.ee.ethz.ch/~juliens/sentinel/
 .. _registration: https://scihub.copernicus.eu/dhus/#/self-registration
 .. _Sentinel-2: https://sentinels.copernicus.eu/web/sentinel/missions/sentinel-2
 .. _UTM: https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system
