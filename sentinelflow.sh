@@ -278,7 +278,7 @@ then
                      --output-document $manifestpath $url
             fi
 
-            # manifest file name pattern
+            # granule xml and image file name pattern
             if [ "$sentinel1" == "yes" ]
             then
                 pattern="hh.*tiff"
@@ -288,7 +288,7 @@ then
                     rgb) bandnumbers="2|3|4" ;;
                     *)   echo "Error, unsupported color mode $bands" ;;
                 esac
-                pattern="T(${tiles//,/|}).*(MTD.*.xml|_B0($bandnumbers).jp2)"
+                pattern="GRANULE/.*T(${tiles//,/|}).*(MTD.*.xml|_B0($bandnumbers).jp2)"
             fi
 
             # find and loop on granule xml files and bands for requested tiles
@@ -417,7 +417,7 @@ w=$(echo "$extent" | cut -d ',' -f 1)
 n=$(echo "$extent" | cut -d ',' -f 4)
 worldfile="${ewres}\n0\n-0\n-${nsres}\n${w}\n${n}"
 
-# find sensing dates (days) with data on requested tiles
+# find sensing dates (and sat) with data on requested tiles
 allscenes=$(find scenes | egrep "T(${tiles//,/|})/" || echo "")
 sensdates=$(echo "$allscenes" | sed 's:.*/::' | cut -d '_' -f 1 | uniq)
 
