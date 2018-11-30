@@ -341,6 +341,20 @@ fi
 # Prepare scene VRTs by sensing date
 # ----------------------------------
 
+# check for granule directory
+if [ ! -d "granules" ]
+then
+    if [ "$offline" = "yes" ]
+    then
+        echo "No local data. Exiting."
+        exit 0
+    else
+        echo "No data found. Try a new query."
+        exit 0
+    fi
+fi
+
+# create scenes directory if missing
 mkdir -p scenes
 
 # for each tile
