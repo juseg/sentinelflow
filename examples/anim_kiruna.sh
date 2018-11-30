@@ -45,3 +45,18 @@ selected="
 20180716_102021_464_S2B_RGB.jpg 20180729_103019_462_S2B_RGB.jpg
 20180909_102020_462_S2A_RGB.jpg 20181009_102020_464_S2A_RGB.jpg
 20181010_104018_457_S2B_RGB.jpg 20181024_102102_462_S2B_RGB.jpg"
+
+# add text labels using Imagemagick
+mkdir -p animation/kiruna
+for frame in $selected
+do
+    ifile="composite/kiruna/$frame"
+    ofile="animation/kiruna/$frame"
+    label="${frame:0:4}.${frame:4:2}.${frame:6:2}"
+    if [ ! -f $ofile ]
+    then
+        convert $ifile -fill '#ffffff80' -draw 'rectangle 1600,40,1880,120' \
+                -font DejaVu-Sans-Bold -pointsize 36 -gravity northeast \
+                -fill black -annotate +65+60 $label $ofile
+    fi
+done
