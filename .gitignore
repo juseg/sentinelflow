@@ -1,12 +1,22 @@
+# sentinel data
 *.jp2
-*.jpg
-*.jpw
 *.tif
 *.tiff
-*.txt
 *.xml
-*.vrt
 *.SAFE
+
+# sentinelflow
+*.jpg
+*.jpw
+*.txt
+*.vrt
+
+# animation files
+*.mp4
+*.png
+*.svg
+
+# python packaging
 *.pyc
 /build
 /dist
