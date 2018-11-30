@@ -60,3 +60,44 @@ do
                 -fill black -annotate +65+60 $label $ofile
     fi
 done
+
+
+# Assemble video
+# --------------
+
+# fetch cc by sa icons and replace colors
+for icon in cc by sa
+do
+    if [ ! -f $icon.png ]
+    then
+        wget -nc https://mirrors.creativecommons.org/presskit/icons/$icon.svg
+        sed -e 's/FFFFFF/000000/' \
+            -e 's/path /path fill="#bfbfbf" d=/' $icon.svg > $icon.grey.svg
+        inkscape $icon.grey.svg -w 320 -h 320 --export-png="$icon.png"
+        rm $icon.grey.svg
+    fi
+done
+
+# prepare title frame
+title="Three years of mining and moving in Kiruna"
+author="J. Seguinot, 2018"
+version=$(git describe --abbrev=0 --tags)
+credit="Contains modified Copernicus Sentinel data (2015–2018).\n"
+credit+="Processed with Sentinelflow ($version)."
+convert -size 1920x1080 xc:black -font DejaVu-Sans -gravity center \
+    -fill '#ffffff' -pointsize 64 -annotate +000-200 "$title" \
+    -fill '#cccccc' -pointsize 48 -annotate +000-040 "$author" \
+    -gravity west                 -annotate +240+320 "$credit" \
+    anim_kiruna.png
+
+# prepare license frame
+convert -size 1920x1080 xc:black -gravity center \
+    cc.png -geometry 320x320-400-160 -composite \
+    by.png -geometry 320x320+000-160 -composite \
+    sa.png -geometry 320x320+400-160 -composite \
+    -fill '#bfbfbf' -pointsize 48 \
+    -font DejaVu-Sans -annotate +000+160 \
+        "This work is licensed under:" \
+    -font DejaVu-Sans-Bold -annotate +000+280 \
+        "http://creativecommons.org/licenses/by-sa/4.0/ " \
+    anim_ccbysa.png
