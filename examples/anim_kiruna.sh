@@ -1,11 +1,31 @@
 #!/bin/bash
-# Copyright (c) 2016--2018, Julien Seguinot <seguinot@vaw.baug.ethz.ch>
+# Copyright (c) 2018, Julien Seguinot <seguinot@vaw.baug.ethz.ch>
 # GNU General Public License v3.0+ (https://www.gnu.org/licenses/gpl-3.0.txt)
 #
 # Assemble Kiruna Sentinel-2 animation using Sentinelflow
 #
 #    ./anim_kiruna.sh --user USER --pass PASS
 #    ./anim_kiruna.sh --offline
+#
+# Kiruna, the most arctic city of Sweden, also hosts the world's largest iron
+# ore mine. In the last few years, the city has begun a major relocation plan
+# to allow for further mining under the current city centre, located right in
+# the alignment of the main vein in the top-centre of the image. Thousands of
+# homes, historical buildings and the major transportation axes will all be
+# moved a few kilometers east.
+#
+# The images show mining activity in some of the pits, construction of new
+# roads and foundations of the new city centre (centre-right). The new city
+# hall opened last week and is visible a circular building at the southern edge
+# of the construction site. Also note how the heat from the mine appears to
+# accelerate snow melt in the Spring as compared to the surrounding areas. In
+# the coming years Sentinel satellites will certainly capture the more dramatic
+# changes planned for Kiruna.
+#
+# Contains Copernicus Sentinel data (2018). Processed with Sentinelflow:
+#
+#    sentinelflow.sh [...] --intersect 67.9,20.2 --cloudcover 30 --maxrows 99 \
+#                         --tiles 34WDA --extent 458400,7519600,477600,7530400
 
 
 # Fetch images
