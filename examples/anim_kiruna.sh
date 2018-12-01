@@ -97,7 +97,32 @@ convert -size 1920x1080 xc:black -gravity center \
     sa.png -geometry 320x320+400-160 -composite \
     -fill '#bfbfbf' -pointsize 48 \
     -font DejaVu-Sans -annotate +000+160 \
-        "This work is licensed under:" \
+        "This work is licensed under" \
     -font DejaVu-Sans-Bold -annotate +000+280 \
         "http://creativecommons.org/licenses/by-sa/4.0/ " \
     anim_ccbysa.png
+
+# assembling parametres
+fade=12  # number of frames for fade in and fade out effects
+hold=25  # number of frames to hold in the beginning and end
+secs=$((12+2*hold/25))  # duration of main scene in seconds
+
+# prepare filtergraph for main scene
+filt="nullsrc=s=1920x1080:d=$secs[n];"   # create fixed duration stream
+filt+="[0]minterpolate=8:dup,"          # duplicate consecutive frames
+filt+="minterpolate=25:blend,"          # blend consecutive frames
+filt+="loop=$hold:1:0,[n]overlay"       # hold first and last frames
+
+# add title and license frames
+filt+=",fade=in:0:$fade,fade=out:$((secs*25-fade)):$fade[main];"  # main scene
+filt+="[1]fade=in:0:$fade,fade=out:$((2*25-fade)):$fade[head];"  # title frame
+filt+="[2]fade=in:0:$fade,fade=out:$((2*25-fade)):$fade[bysa];"  # license
+filt+="[head][main][bysa]concat=3" \
+
+# assemble frames and bumpers using ffmpeg
+ffmpeg \
+    -pattern_type glob -r 4 -i "animation/kiruna/*.jpg" \
+    -loop 1 -t 2 -i anim_kiruna.png \
+    -loop 1 -t 2 -i anim_ccbysa.png \
+    -filter_complex $filt -pix_fmt yuv420p -c:v libx264 \
+    anim_kiruna.mp4
