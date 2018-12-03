@@ -7,6 +7,8 @@
 #    ./anim_kiruna.sh --user USER --pass PASS
 #    ./anim_kiruna.sh --offline
 #
+# Three years of mining and moving in Kiruna https://vimeo.com/304078839
+#
 # Kiruna, the most arctic city of Sweden, also hosts the world's largest iron
 # ore mine. In the last few years, the city has begun a major relocation plan
 # to allow for further mining under the current city centre, located right in

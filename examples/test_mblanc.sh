@@ -7,7 +7,7 @@
 #    ./test_mblanc.sh --user USER --pass PASS
 #    ./test_mblanc.sh --offline
 #
-# High above the top of Europe
+# High above the top of Europe https://imaggeo.egu.eu/view/13612
 #
 # Sentinel-2B imaged the highest mountains of western Europe, just the moment
 # an aeroplane was about to fly over the granite peaks of Grandes Jorasses and
