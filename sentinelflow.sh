@@ -330,17 +330,6 @@ then
     exit 0
 fi
 
-# if no tiles were provided
-if [ "$tiles" == "" ]
-then
-    echo "No tiles were provided. Exiting."
-    exit 0
-fi
-
-
-# Prepare scene VRTs by sensing date
-# ----------------------------------
-
 # check for granule directory
 if [ ! -d "granules" ]
 then
@@ -353,6 +342,17 @@ then
         exit 0
     fi
 fi
+
+# if no tiles were provided
+if [ "$tiles" == "" ]
+then
+    echo "No tiles were provided. Exiting."
+    exit 0
+fi
+
+
+# Prepare scene VRTs by sensing date
+# ----------------------------------
 
 # create scenes directory if missing
 mkdir -p scenes
