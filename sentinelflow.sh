@@ -496,15 +496,17 @@ do
 
     # gamma correction depends on color mode
     case ${bands,,} in
-        irg) gamma="5.50,5.05,5.10";;
-        rgb) gamma="5.05,5.10,4.85";;
+        irg) gammaargs="-channel R -gamma 5.50 -channel G -gamma 5.05"
+             gammaargs+=" -channel B -gamma 5.10 +channel";;
+        rgb) gammaargs="-channel R -gamma 5.05 -channel G -gamma 5.10"
+             gammaargs+=" -channel B -gamma 4.85 +channel";;
     esac
 
     # convert to human-readable jpeg
     if [ ! -s $ofile.jpg ]
     then
         echo "Converting $ofile.tif ..."
-        convert -gamma $gamma -sigmoidal-contrast $sigma \
+        convert $gammaargs -sigmoidal-contrast $sigma \
                 -modulate 100,150 $sharpargs -quality 85 -quiet \
                 $ofile.tif $ofile.jpg
         echo -e "$worldfile" > $ofile.jpw
