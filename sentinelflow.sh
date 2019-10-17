@@ -424,13 +424,6 @@ done
 # make output directories
 mkdir -p composite/$region
 
-# parse extent for world file
-ewres="$resolution"
-nsres="$resolution"
-w=$(echo "$extent" | cut -d ',' -f 1)
-n=$(echo "$extent" | cut -d ',' -f 4)
-worldfile="${ewres}\n0\n-0\n-${nsres}\n${w}\n${n}"
-
 # find sensing dates (and sat) with data on requested tiles
 allscenes=$(find scenes | egrep "T(${tiles//,/|})/" || echo "")
 sensdates=$(echo "$allscenes" | sed 's:.*/::' | cut -d '_' -f 1 | uniq)
@@ -502,14 +495,14 @@ do
              gammaargs+=" -channel B -gamma 4.85 +channel";;
     esac
 
-    # convert to human-readable jpeg
+    # prepare xml metadata and human-readable jpeg
     if [ ! -s $ofile.jpg ]
     then
         echo "Converting $ofile.tif ..."
+        gdal_translate -q $ofile.tif $ofile.jpg 2> /dev/null
         convert $gammaargs -sigmoidal-contrast $sigma \
                 -modulate 100,150 $sharpargs -quality 85 -quiet \
                 $ofile.tif $ofile.jpg
-        echo -e "$worldfile" > $ofile.jpw
     fi
 
     # remove tiff unless asked not to
