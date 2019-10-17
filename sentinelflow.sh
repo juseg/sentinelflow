@@ -472,12 +472,12 @@ do
 
     # count percentage of null pixels
     nulls=$(convert -quiet $ofile.tif -fill white +opaque black \
-            -print "%[fx:100*(1-mean)]" null:)
+            -print "%[fx:int(100*(1-mean))]" null:)
     message="Found ${nulls}% null values."
     echo $message
 
     # if more nulls than allowed, report in txt and remove tifs
-    if [ "${nulls%.*}" -ge "${nullvalues}" ]
+    if [ "$nulls" -ge "$nullvalues" ]
     then
         echo "Removing $ofile.tif ..."
         echo "$message" > $ofile.txt
