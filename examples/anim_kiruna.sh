@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2018, Julien Seguinot <seguinot@vaw.baug.ethz.ch>
+# Copyright (c) 2018--2019, Julien Seguinot <seguinot@vaw.baug.ethz.ch>
 # GNU General Public License v3.0+ (https://www.gnu.org/licenses/gpl-3.0.txt)
 #
 # Assemble Kiruna Sentinel-2 animation using Sentinelflow
@@ -24,10 +24,10 @@
 # the coming years Sentinel satellites will certainly capture the more dramatic
 # changes planned for Kiruna.
 #
-# Contains Copernicus Sentinel data (2018). Processed with Sentinelflow:
+# Contains Copernicus Sentinel data (2015--2018). Processed with Sentinelflow:
 #
 #    sentinelflow.sh [...] --intersect 67.9,20.2 --cloudcover 30 --maxrows 99 \
-#                         --tiles 34WDA --extent 458400,7519600,477600,7530400
+#                          --tiles 34WDA --extent 458400,7519600,477600,7530400
 
 
 # Fetch images
