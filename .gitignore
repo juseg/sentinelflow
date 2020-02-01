@@ -12,6 +12,7 @@
 *.vrt
 
 # animation files
+*.gif
 *.mp4
 *.png
 *.svg
