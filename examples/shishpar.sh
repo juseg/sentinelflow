@@ -4,8 +4,8 @@
 #
 # Assemble Shishpar Glacier surge animation using Sentinelflow
 #
-#    ./anim_shishpar.sh --user USER --pass PASS
-#    ./anim_shishpar.sh --offline
+#    ./shishpar.sh --user USER --pass PASS
+#    ./shishpar.sh --offline
 
 
 # Fetch images
