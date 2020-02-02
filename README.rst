@@ -1,4 +1,4 @@
-.. Copyright (c) 2017--2018, Julien Seguinot <seguinot@vaw.baug.ethz.ch>
+.. Copyright (c) 2017--2020, Julien Seguinot <seguinot@vaw.baug.ethz.ch>
 .. GNU General Public License v3.0+ (https://www.gnu.org/licenses/gpl-3.0.txt)
 
 Sentinelflow
@@ -13,8 +13,9 @@ Sentinelflow
 
 Search, download and patch Copernicus_ Sentinel-2_ data into appealing color
 images. Colors are adapted to human perception and fit for dark oceans as well
-as bright snow surfaces. Check out the examples directory to assemble images
-on `Mont Blanc`_ and Kiruna_, and some more examples at my webpage_.
+as bright snow surfaces. Check out the example glacier animations in the
+examples directory, and more examples at my webpage_. Support for archived
+(offline) products is not yet available.
 
 Requires GDAL_, ImageMagick_, XMLStarlet_, and a registration_ to the
 Copernicus Open Access Hub. A Python port is under preparation.
@@ -28,7 +29,6 @@ To fetch the latest cloud-free image over the Aletsch Glacier use::
    sentinelflow.sh --user USERNAME --pass PASSWORD --cloudcover 10 \
                    --intersect 46.4,8.1 --maxrows 1 --tiles 32TMS \
                    --extent 417000,5138000,432000,5158000
-
 
 Please refer to the Sentinel-2 `data products`_ documentation to find your
 corresponding tile(s). The image extent is given in UTM_ coordinates of the
@@ -44,8 +44,6 @@ mention:
 
 .. Example links
 
-.. _Mont Blanc: https://imaggeo.egu.eu/view/13612
-.. _Kiruna: https://vimeo.com/304078839
 .. _webpage: https://people.ee.ethz.ch/~juliens/sentinel
 
 .. Documentation links
