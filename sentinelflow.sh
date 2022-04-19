@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2016--2018, Julien Seguinot <seguinot@vaw.baug.ethz.ch>
+# Copyright (c) 2019-2022, Julien Seguinot (juseg.github.io)
 # GNU General Public License v3.0+ (https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
@@ -19,7 +19,7 @@ General options
 Query and download options
     -c, --cloudcover    maximum cloud cover fraction (default: none)
     -d, --daterange     range of sensing date in query (default: none)
-    -i, --intersect     point LAT,LON or rectangle W,E,S,N (default: none)
+    -i, --intersect     point LAT,LON or rectangle W,S,E,N (default: none)
     -m, --maxrows       maximum number of rows in query (default: 10)
     -t, --tiles         tiles to download, comma-separated (default: 32TMS)
 
