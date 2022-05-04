@@ -500,9 +500,8 @@ do
     then
         echo "Converting $ofile.tif ..."
         gdal_translate -q $ofile.tif $ofile.jpg 2> /dev/null
-        convert $gammaargs -sigmoidal-contrast $sigma \
-                -modulate 100,150 $sharpargs -quality 85 -quiet \
-                $ofile.tif $ofile.jpg
+        magick -quiet $ofile.tif $gammaargs -sigmoidal-contrast $sigma \
+               -modulate 100,150 $sharpargs -quality 85 $ofile.jpg
     fi
 
     # remove tiff unless asked not to
