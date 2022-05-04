@@ -169,7 +169,7 @@ offline=${offline:="no"}
 # ------------------
 
 # check for ImageMagick
-if ! [ -x "$(command -v convert)" ]
+if ! [ -x "$(command -v magick)" ]
 then
     echo "Error: convert not found. Please install ImageMagick." >&2
     exit 1
@@ -464,7 +464,7 @@ do
     fi
 
     # count percentage of null pixels
-    nulls=$(convert -quiet $ofile.tif -fill white +opaque black \
+    nulls=$(magick -quiet $ofile.tif -fill white +opaque black \
             -print "%[fx:int(100*(1-mean))]" null:)
     message="Found ${nulls}% null values."
     echo $message
